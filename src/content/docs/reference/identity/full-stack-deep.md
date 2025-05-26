@@ -1,6 +1,9 @@
 ---
-title: Identity of Full Stack
-description: Full stack engineer philosophy, psychology, and identity as a force of transformation. 
+title: Full Stack Philosophy
+---
+
+Full stack engineer philosophy, psychology, and identity as a force of transformation. “Full stack engineer” not as a label but as a narrative you live inside, with psychological consequences, evolution arcs, internal conflicts, and future metamorphoses.
+
 ---
 
 ## **1. Identity as a Narrative You Live**
