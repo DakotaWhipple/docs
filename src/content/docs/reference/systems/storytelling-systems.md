@@ -1,6 +1,5 @@
 ---
 title: Storytelling Systems
-description: Storytelling through systems philosophy.
 ---
 
 ## 🌌 Storytelling Systems Through the Lens of Systems Philosophy
