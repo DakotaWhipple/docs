@@ -86,7 +86,7 @@ Let’s outline the arc of transformation as this identity matures:
 
 * Your joy comes from shipping things that work.
 * You solve problems bottom-up.
-* You act as a tool-wielder: API docs, Stack Overflow, terminal open, ready to go.
+* You act as a tool-wielder: API docs, chatGPT, terminal open, ready to go.
 
 **Transformational trigger**: hitting the ceiling of tool-based thinking.
 You start asking: *“Why are we doing it this way?”*
