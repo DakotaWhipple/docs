@@ -1,5 +1,5 @@
 ---
-title: System parts
+title: System Parts
 slug: docs/system-parts
 ---
 
