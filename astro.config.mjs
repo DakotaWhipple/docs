@@ -10,6 +10,12 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'whipple.dev',
+			logo: {
+				light: './src/assets/logo.svg',
+				dark: './src/assets/logo-dark.svg',
+				alt: 'Whipple Logo',
+				// height: 32 // adjust as needed
+			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/DakotaWhipple/docs' }],
 			sidebar: [
 				{
