@@ -1,5 +1,6 @@
 ---
 title: Backend Starter
+slug: docs/backend-starter
 ---
 
 If I’m hiring a backend developer and I want them to be **immediately productive**, there are a few **non-CS fundamentals** I would **require expertise in**, depending on the maturity and scale of the system. Here are the **most impactful backend-specific domains** that I’d lean heavily on:

@@ -1,5 +1,6 @@
 ---
 title: Full Stack Metaphor
+slug: docs/full-stack-metaphor
 ---
 
 To **"create metaphors or mental models for how software should be shaped"** is to help yourself or others *grasp complexity through analogy*. Instead of seeing code as just logic, you visualize or model the software like something physical or familiar—helping to reason about structure, constraints, growth, and behavior.

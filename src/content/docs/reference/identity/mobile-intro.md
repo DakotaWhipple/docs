@@ -1,5 +1,6 @@
 ---
 title: Mobile Starter
+slug: docs/mobile-starter
 ---
 
 If I’m hiring a **mobile developer** (let’s say Android or iOS, native or cross-platform like Flutter), and I want them to be **immediately valuable**, here's what I’d **require beyond CS fundamentals**—specifically focused on what separates high-leverage mobile devs from average ones:

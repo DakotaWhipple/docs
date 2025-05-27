@@ -4,7 +4,9 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://whipple.dev',
+	// site: 'https://whipple.dev',
+	site: 'http://localhost:4321',
+	base: '',
 	integrations: [
 		starlight({
 			title: 'whipple.dev',

@@ -1,5 +1,6 @@
 ---
 title: Full Stack Philosophy
+slug: docs/full-stack-philosophy
 ---
 
 Full stack engineer philosophy, psychology, and identity as a force of transformation. “Full stack engineer” not as a label but as a narrative you live inside, with psychological consequences, evolution arcs, internal conflicts, and future metamorphoses.

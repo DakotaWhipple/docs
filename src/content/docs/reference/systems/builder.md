@@ -1,5 +1,6 @@
 ---
 title: Building Mountains
+slug: docs/builder
 ---
 
 ## 🏗️ How to Build Mountains (Not To-Do Apps)

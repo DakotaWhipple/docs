@@ -1,5 +1,6 @@
 ---
 title: Storytelling Systems
+slug: docs/storytelling-systems
 ---
 
 ## 🌌 Storytelling Systems Through the Lens of Systems Philosophy

@@ -1,6 +1,6 @@
 ---
 title: Codex of Driven Dev
-description: All the driven developments.
+slug: docs/codex-of-driven-dev
 ---
 
 # 🧱 Architecture-Driven Development

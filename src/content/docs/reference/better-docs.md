@@ -1,5 +1,6 @@
 ---
 title: Better Docs
+slug: docs/better-docs
 ---
 
 Building a compelling **documentation website** as a platform for a project. Docs site can *multiply* the visibility, professionalism, and credibility of the project. 

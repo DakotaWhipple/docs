@@ -1,6 +1,6 @@
 ---
 title: System parts
-description: System theory stuff.
+slug: docs/system-parts
 ---
 
 
