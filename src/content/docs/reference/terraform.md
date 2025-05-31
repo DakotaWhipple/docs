@@ -43,8 +43,7 @@ uptimekuma
 wazuh
 
 # ordered
-1. nginx
-2. nginxproxymanager or traefik (choose one reverse proxy)
+1. traefik
 3. mariadb or postgres (choose your preferred database)
 4. portainer or dockge (container management)
 5. grafana
