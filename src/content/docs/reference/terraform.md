@@ -2,47 +2,6 @@
 title: Backend Stack
 ---
 
-ansiblesemaphore
-authentik
-bind9
-cadvisor
-checkmk
-clamav
-dockge
-duplicati
-factory
-gitea
-gitlab
-gitlab-runner
-grafana
-heimdall
-homeassistant
-homepage
-homer
-influxdb
-loki
-mariadb
-nextcloud
-nginx
-nginxproxymanager
-nodeexporter
-nvidiadgcm
-nvidiasmi
-openwebui
-passbolt
-pihole
-portainer
-postgres
-prometheus
-promtail
-swag
-teleport
-traefik
-twingate_connector
-uptimekuma
-wazuh
-
-# ordered
 1. traefik
 2. mariadb or postgres (choose your preferred database)
 3. portainer or dockge (container management)
@@ -76,3 +35,4 @@ wazuh
 30. heimdall
 31. homepage
 32. homer
+33. kong
