@@ -1,5 +1,5 @@
 ---
-title: Backend Stack
+title: Random Learning Stack
 ---
 
 1. traefik
