@@ -2,12 +2,60 @@
 title: Web Inspiration
 ---
 
-I go to whipple.dev
+## 🎯 At-a-Glance
+- **Today’s Focus**  
+  • “Deep dive into Go CLI project (2 h left)”  
+- **Quick Stats**  
+  • Commits this week: 12  |  PRs open: 3  
+  • Blog reads: 1.3 K  |  Subscribers: 430
 
-It shows a dashboard of my upcoming appointments and todo list.
-It coordinates big project items, how long I estimated them to take, and time since I started them.
-It shows activity on my website by others.
-It shows my github commit history.
-Access to different blogs and activity metrics for them.
-Way to submit blogs to website and other platforms.
-Different learning initiatives that I'm starting and progress on them. Latest links, synced with my bookmarks.
+## 📅 Calendar & Tasks
+- **Upcoming Appointments**  
+  • [2025-07-10 13:00] Design review w/ UX team  
+- **To-Do List**  
+  • [ ] Write unit tests for payment module (Est: 1.5 h)  
+  • [ ] Merge feature/ci-pipeline (Est: 30 min)
+
+## 🛠 Projects & Estimates
+- **Ongoing Big-Picture Items**  
+  | Project                         | Est. Duration | Started       | Progress |
+  | --------------------------------| ------------- | ------------- | -------- |
+  | Magic Gift Co Dashboard Redesign| 4 wk          | 2025-06-15    | 60 %     |
+  | Go CLI “reef” integration       | 2 wk          | 2025-06-25    | 25 %     |
+- **Time-Since-Start**  
+  • “Go CLI” → 2 wk, 4 d, 3 h
+
+## 📈 Code & Community Activity
+- **GitHub**  
+  • Last commit: “fix: handle nil pointer” (3 h ago)  
+  • Weekly trend sparkline ▶  
+- **Website Engagement**  
+  • Unique visitors today: 210  
+  • Top page: “/blog/go-cli-tips” (85 views)
+
+## ✍️ Blog & Content Workflow
+- **Drafts in Progress**  
+  • “5 Tips for Gapless Image Playback in Flutter” (75 % done)  
+- **Publish & Syndicate**  
+  • Submit to Dev.to  |  Hashnode  |  Medium  
+- **Metrics Dashboard**  
+  • Avg. read time: 4 min  |  Bounce rate: 42 %
+
+## 🎓 Learning & Growth
+- **Active Learning Initiatives**  
+  • “Rust CLI Masterclass” → 6 videos watched  
+  • “Advanced Ansible + Kubernetes” → Day 3/10  
+- **Bookmarks & Latest Links**  
+  • “GCP IAM deep dive”  |  “Designing Data-Intensive Apps” notes
+
+## 🔗 Quick-Launch & Shortcuts
+- **One-Click Access**  
+  • [New GitHub Issue]  |  [Log Time] in Toggl  
+  • [Start Pomodoro] (25 min)
+
+## 🎨 Personal Touch
+- **Daily Code Tip**  
+  • “Use `defer` in Go for clean resource cleanup.”  
+- **Mood & Focus Tracker**  
+  • Today’s mood: 🚀  |  Focus: “Async error handling”
+
