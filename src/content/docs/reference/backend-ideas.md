@@ -196,7 +196,6 @@ title: Backend ideas
 - Support infrastructure drift detection
 
 ## Additional Resources
-- [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)
 - [Go Patterns](https://github.com/tmrts/go-patterns)
 - [Kubernetes Patterns](https://www.redhat.com/en/resources/oreilly-kubernetes-patterns-cloud-native-apps)
 - [System Design Primer](https://github.com/donnemartin/system-design-primer)
