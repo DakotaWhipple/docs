@@ -2,8 +2,6 @@
 title: Android Compose Roadmap
 ---
 
-## title: Android Compose Roadmap — Master of Masters
-
 # Ultimate Jetpack Compose UI Mastery Roadmap
 
 *Each bullet now shows a concrete, real‑world example so reviewers instantly grasp the breadth of your experience.*
