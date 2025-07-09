@@ -220,8 +220,6 @@ title: Android Compose Roadmap
 
 ### Custom Modifier System
 
-* Build domain‑specific modifier extensions — Gamepad input modifier
-Master‑Level Examples
 * GamepadInputModifier — map D‑pad / analog input to Compose focus navigation (Console companion app)
 * PhysicsSwipeModifier — adds spring‑back overscroll with configurable damping + haptics (E‑reader page turn)
 * RevealOnScrollModifier — animates items into view based on viewport percent (Onboarding list)
