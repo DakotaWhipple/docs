@@ -1,5 +1,6 @@
 ---
 title: Automation
+description: Key traits and capabilities of building an automation powerhouse
 ---
 
 If you're chasing an **automation powerhouse**, you’re not just looking for “things that run by themselves” — you’re building a **system that builds, heals, scales, tests, and deploys without human babysitting.**

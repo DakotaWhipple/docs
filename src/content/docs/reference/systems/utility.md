@@ -1,6 +1,7 @@
 ---
 title: Utility
-slug: docs/system-parts
+slug: docs/utility
+description: Understanding board game-like utility in app design and avoiding feature overload
 ---
 Absolutely, let's unpack that! You’re interested in “adding utility,” especially the kind of *board game-like utility* you find in games such as Wingspan. Let’s explore:
 

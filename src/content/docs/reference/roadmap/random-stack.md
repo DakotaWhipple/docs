@@ -1,5 +1,6 @@
 ---
 title: Random Learning Stack
+description: Collection of containerized services and tools for learning and development
 ---
 
 1. traefik

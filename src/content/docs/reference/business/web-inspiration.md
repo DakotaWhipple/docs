@@ -1,5 +1,6 @@
 ---
 title: Web Inspiration
+description: Dashboard inspiration for developer productivity and project management
 ---
 
 ## 🎯 At-a-Glance

@@ -1,5 +1,6 @@
 ---
 title: Business Plan
+description: Step-by-step plan for transforming a company from zero direction to profitable business clarity
 ---
 Here's a step-by-step plan that blends **CMO** vision with **CFO** rigor—turning a company with zero direction into one with crystal-clear purpose and a path to profitability.
 

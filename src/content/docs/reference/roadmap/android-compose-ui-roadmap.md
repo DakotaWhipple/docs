@@ -1,5 +1,6 @@
 ---
 title: Android Compose Roadmap
+description: Ultimate Jetpack Compose UI mastery roadmap with advanced techniques and real-world examples
 ---
 
 # Ultimate Jetpack Compose UI Mastery Roadmap

@@ -1,5 +1,6 @@
 ---
 title: PostgreSQL
+description: Comprehensive PostgreSQL learning roadmap from basics to advanced techniques and database internals
 ---
 
 To become an advanced PostgreSQL user — job-ready and fluent in advanced techniques like migrations, query optimization, and database internals — you’ll need a structured approach that balances **practical experience**, **deep dives**, and **exposure to real-world problems**. Here's a roadmap:

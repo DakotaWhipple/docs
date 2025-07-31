@@ -1,5 +1,6 @@
 ---
-title: Backend ideas
+title: Backend Ideas
+description: Advanced Go backend development roadmap with authentication, data systems, and scalability patterns
 ---
 
 # Advanced Go Backend Development Roadmap
