@@ -1,5 +1,5 @@
 ---
-title: "Copilot O3 Mini"
+title: "Copilot o4-mini"
 description: "Greedy algorithms overview with practical examples including coin change implementation"
 ---
 
