@@ -1,59 +1,67 @@
 ---
-title: "Copilot GPT-4.1"
+title: "Copilot GPT-4.1 1"
 description: "Greedy algorithms explanation focusing on locally optimal choices and key characteristics"
 ---
 
+
 # Greedy
 
-* **Greedy** means: At each step, make the choice that looks best **right now**.
-* You never reconsider your decisions—no backtracking.
-* Works when **local optimum = global optimum** (the problem has the "greedy property").
+* **Greedy** algorithms make the best choice at each step, hoping it leads to the global optimum.
+* You **never reconsider** past choices—no backtracking.
 
-Example:
+## When to Use
 
-* **Coin Change (min coins):** Always pick the largest coin you can.
-* **Activity Selection:** Always pick the next activity that ends earliest.
+* When a problem has the **greedy-choice property** (local optimum → global optimum)
+* Often used for:
+  * Interval scheduling
+  * Coin change (when denominations allow)
+  * Minimizing/maximizing sums, costs, etc.
 
-**How to recognize greedy problems:**
-* Problem asks for an **optimal** answer (min/max/smallest/largest)
-* You can make a choice and never have to change it later
+## Example
 
-**Typical greedy pattern:**
-
-1. Sort or prioritize items (by value, end time, etc.)
-2. Iterate, always picking the best available option
-3. Never look back or undo choices
+```go
+// Greedy: Find minimum number of coins
+coins := []int{1, 5, 10, 25}
+amount := 37
+count := 0
+for i := len(coins)-1; i >= 0; i-- {
+    for amount >= coins[i] {
+        amount -= coins[i]
+        count++
+    }
+}
+```
 
 ---
 
 # Sliding Window
 
-* **Sliding window** is for problems involving **contiguous subarrays/substrings**.
-* You maintain a "window" (range) over the array/string and move it to find the answer.
+* **Sliding window** is a technique for problems involving **contiguous subarrays or substrings**.
+* You maintain a window (range) over the data and move it efficiently.
 
-**When to use:**
-* Find the longest/shortest subarray with some property
-* Count subarrays with a sum, unique elements, etc.
+## When to Use
 
-**Two main types:**
-1. **Fixed-size window:** Window size is constant (e.g., length k)
-2. **Variable-size window:** Window expands/contracts to fit a condition
+* When you need to find max/min/sum/average/count of subarrays of size k, or with certain properties
+* Common in substring, subarray, and sequence problems
 
-**Pattern:**
+## Example
 
-1. Start with window at the beginning
-2. Expand (move right end) to include new elements
-3. Shrink (move left end) to restore property if needed
-4. Track the best answer as you go
-
-Example (Longest substring with no repeats):
-
+```go
+// Sliding window: Max sum of subarray of size k
+nums := []int{1, 2, 3, 4, 5, 6}
+k := 3
+sum := 0
+maxSum := 0
+for i := 0; i < k; i++ {
+    sum += nums[i]
+}
+maxSum = sum
+for i := k; i < len(nums); i++ {
+    sum += nums[i] - nums[i-k]
+    if sum > maxSum {
+        maxSum = sum
+    }
+}
 ```
-left = 0
-for right in range(len(s)):
-    while s[right] in window:
-        remove s[left] from window
-        left += 1
-    add s[right] to window
-    update best answer
-```
+
+---
