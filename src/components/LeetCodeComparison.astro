@@ -1,0 +1,254 @@
+---
+// Import all solution files statically using modern glob import
+const solutionModules = import.meta.glob('../content/docs/leetcode/*.js', { as: 'raw', eager: true });
+---
+
+<div class="leetcode-comparison">
+  <div class="comparison-controls">
+    <div class="editor-control">
+      <label for="left-select">Left Solution:</label>
+      <select id="left-select">
+        <optgroup label="Two Sum">
+          <option value="two-sum-1.js">Brute Force O(n²)</option>
+          <option value="two-sum-2.js">Hash Map O(n)</option>
+        </optgroup>
+        <optgroup label="Valid Parentheses">
+          <option value="valid-parentheses-1.js">Stack Solution</option>
+          <option value="valid-parentheses-2.js">Counter (Simple)</option>
+        </optgroup>
+      </select>
+    </div>
+    
+    <div class="editor-control">
+      <label for="right-select">Right Solution:</label>
+      <select id="right-select">
+        <optgroup label="Two Sum">
+          <option value="two-sum-1.js">Brute Force O(n²)</option>
+          <option value="two-sum-2.js" selected>Hash Map O(n)</option>
+        </optgroup>
+        <optgroup label="Valid Parentheses">
+          <option value="valid-parentheses-1.js">Stack Solution</option>
+          <option value="valid-parentheses-2.js">Counter (Simple)</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+
+  <div class="editors-container">
+    <div class="editor-panel">
+      <pre id="left-editor"><code class="language-javascript"></code></pre>
+    </div>
+    <div class="editor-panel">
+      <pre id="right-editor"><code class="language-javascript"></code></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Solution content mapping
+  const solutions = {
+    "two-sum-1.js": `// Two Sum - Brute Force Solution
+// Time: O(n²), Space: O(1)
+
+function twoSum(nums, target) {
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[i] + nums[j] === target) {
+                return [i, j];
+            }
+        }
+    }
+    return [];
+}
+
+// Example usage:
+// twoSum([2, 7, 11, 15], 9) → [0, 1]
+// twoSum([3, 2, 4], 6) → [1, 2]`,
+    "two-sum-2.js": `// Two Sum - Hash Map Solution
+// Time: O(n), Space: O(n)
+
+function twoSum(nums, target) {
+    const map = new Map();
+    
+    for (let i = 0; i < nums.length; i++) {
+        const complement = target - nums[i];
+        
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        
+        map.set(nums[i], i);
+    }
+    
+    return [];
+}
+
+// Example usage:
+// twoSum([2, 7, 11, 15], 9) → [0, 1]
+// twoSum([3, 2, 4], 6) → [1, 2]`,
+    "valid-parentheses-1.js": `// Valid Parentheses - Stack Solution
+// Time: O(n), Space: O(n)
+
+function isValid(s) {
+    const stack = [];
+    const pairs = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+    
+    for (let char of s) {
+        if (char === '(' || char === '{' || char === '[') {
+            stack.push(char);
+        } else if (char === ')' || char === '}' || char === ']') {
+            if (stack.length === 0 || stack.pop() !== pairs[char]) {
+                return false;
+            }
+        }
+    }
+    
+    return stack.length === 0;
+}
+
+// Example usage:
+// isValid("()") → true
+// isValid("()[]{}") → true
+// isValid("(]") → false`,
+    "valid-parentheses-2.js": `// Valid Parentheses - Counter Solution
+// Time: O(n), Space: O(1) for simple parentheses only
+
+function isValid(s) {
+    // This approach only works for simple parentheses ()
+    // For mixed brackets, use the stack approach
+    let count = 0;
+    
+    for (let char of s) {
+        if (char === '(') {
+            count++;
+        } else if (char === ')') {
+            count--;
+            if (count < 0) {
+                return false;
+            }
+        }
+    }
+    
+    return count === 0;
+}
+
+// Note: This solution only works for () parentheses
+// For full bracket support, use the stack solution
+// Example usage:
+// isValid("()") → true
+// isValid("(())") → true
+// isValid("()(") → false`
+  };
+
+  function updateEditor(editorId, solutionKey) {
+    const editor = document.getElementById(editorId);
+    const codeElement = editor.querySelector('code');
+    if (codeElement && solutions[solutionKey]) {
+      codeElement.textContent = solutions[solutionKey];
+    }
+  }
+
+  function initializeEditors() {
+    const leftSelect = document.getElementById('left-select');
+    const rightSelect = document.getElementById('right-select');
+    
+    // Initialize with default selections
+    updateEditor('left-editor', leftSelect.value);
+    updateEditor('right-editor', rightSelect.value);
+    
+    // Add event listeners
+    leftSelect.addEventListener('change', (e) => {
+      updateEditor('left-editor', e.target.value);
+    });
+    
+    rightSelect.addEventListener('change', (e) => {
+      updateEditor('right-editor', e.target.value);
+    });
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEditors);
+  } else {
+    initializeEditors();
+  }
+</script>
+
+<style>
+  .leetcode-comparison {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comparison-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--sl-color-bg-nav);
+    border-bottom: 1px solid var(--sl-color-hairline);
+    gap: 2rem;
+  }
+
+  .editor-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .editor-control label {
+    font-weight: 500;
+    color: var(--sl-color-text);
+  }
+
+  .editor-control select {
+    padding: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+    background: var(--sl-color-bg);
+    color: var(--sl-color-text);
+    min-width: 200px;
+  }
+
+  .editors-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .editor-panel {
+    flex: 1;
+    overflow: auto;
+    border-right: 1px solid var(--sl-color-hairline);
+  }
+
+  .editor-panel:last-child {
+    border-right: none;
+  }
+
+  .editor-panel pre {
+    margin: 0;
+    height: 100%;
+    overflow: auto;
+    padding: 1rem;
+    background: var(--sl-color-bg-code);
+    font-family: var(--sl-font-mono);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .editor-panel code {
+    color: var(--sl-color-text);
+    white-space: pre;
+  }
+
+  /* Syntax highlighting */
+  .language-javascript {
+    color: var(--sl-color-text);
+  }
+</style>

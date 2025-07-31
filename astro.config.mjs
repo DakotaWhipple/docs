@@ -22,6 +22,12 @@ export default defineConfig({
 					label: 'reference',
 					autogenerate: { directory: 'reference' },
 				},
+				{
+					label: 'LeetCode',
+					items: [
+						{ label: 'Solutions Comparison', link: '/leetcode/' },
+					],
+				},
 			],
 		}),
 	],
