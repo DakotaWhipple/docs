@@ -3,151 +3,175 @@ title: "Cursor Claude Thinking"
 description: "Greedy algorithms guide covering locally optimal choices and key insights for problem solving"
 ---
 
-# Greedy Algorithm
+# Greedy Algorithms
 
-* You make the **locally optimal choice** at each step
-* You **never look back** or reconsider previous decisions
-* Hope that local choices lead to a global optimum
+A greedy algorithm makes the **locally optimal choice** at each step, hoping to find a **global optimum**.
 
-Key insight: **"Take what looks best right now"**
+* 🎯 **Key idea**: Make the best decision right now
+* 🚫 **No looking back**: Once you make a choice, stick with it
+* ⚡ **Usually efficient**: Often O(n) or O(n log n)
 
-## 🎯 When Does Greedy Work?
+## When Does Greedy Work?
 
-Greedy works when the problem has the **greedy choice property**:
-* Making the locally optimal choice leads to a globally optimal solution
-* You can prove that choosing greedily at each step doesn't prevent finding the optimal solution
+Greedy works when the problem has **optimal substructure** and the **greedy choice property**:
 
-Example problems:
-* **Fractional Knapsack**: Take items with highest value/weight ratio first
-* **Activity Selection**: Choose activities that end earliest
-* **Huffman Coding**: Build tree by always combining two smallest frequencies
+* **Optimal substructure**: Optimal solution contains optimal solutions to subproblems
+* **Greedy choice property**: Local optimum leads to global optimum
 
-## 🔍 Template Pattern
+## Common Greedy Patterns
 
+### 1. **Interval Scheduling** (Activity Selection)
 ```go
-func greedy(items []Item) Result {
-    // 1. Sort items by greedy criterion
-    sort.Slice(items, func(i, j int) bool {
-        return items[i].greedyCriterion() < items[j].greedyCriterion()
-    })
-    
-    result := Result{}
-    
-    // 2. Iterate and make greedy choices
-    for _, item := range items {
-        if canTake(item, result) {
-            result.add(item)  // Take it greedily
-        }
+// Sort by end time, pick non-overlapping intervals
+sort.Slice(intervals, func(i, j int) bool {
+    return intervals[i][1] < intervals[j][1] // sort by end time
+})
+
+count := 0
+lastEnd := math.MinInt32
+for _, interval := range intervals {
+    if interval[0] >= lastEnd { // no overlap
+        count++
+        lastEnd = interval[1]
     }
-    
-    return result
 }
 ```
 
-## 🧠 Analogy: Hungry at a Buffet
+### 2. **Fractional Knapsack** 
+```go
+// Sort by value/weight ratio, take highest ratio first
+type Item struct { value, weight int }
+sort.Slice(items, func(i, j int) bool {
+    ratioI := float64(items[i].value) / float64(items[i].weight)
+    ratioJ := float64(items[j].value) / float64(items[j].weight)
+    return ratioI > ratioJ
+})
+```
 
-Imagine you're at a buffet with limited stomach space:
+### 3. **Huffman Coding** (Min-Heap)
+```go
+// Always merge the two smallest frequencies
+for heap.Len() > 1 {
+    left := heap.Pop()
+    right := heap.Pop()
+    merged := &Node{freq: left.freq + right.freq, left: left, right: right}
+    heap.Push(merged)
+}
+```
 
-* **Greedy**: Always pick the most delicious-looking food right in front of you
-* **No backtracking**: Once you put food on your plate, you can't put it back
-* **Hope**: That choosing the best available option each time fills you optimally
+## 🧠 Analogy: The Hungry Person
 
-Sometimes this works great (when all good food is at the front), sometimes not (when the best food is at the back)!
+Imagine you're really hungry at a buffet:
+
+* **Greedy approach**: "I'll take the most delicious-looking item right now"
+* **No planning**: You don't think about the entire meal
+* **Sometimes works**: If you have good taste, you end up with a great meal
+* **Sometimes fails**: You fill up on appetizers and miss the amazing dessert
 
 ---
 
 # Sliding Window
 
-* You maintain a **window** (subarray) that **slides** across the array
-* The window **expands** and **contracts** as needed
-* Perfect for **contiguous subarray** problems
+A **two-pointer technique** where you maintain a "window" that slides over an array/string.
 
-Key insight: **"Don't recompute everything from scratch"**
+* 🪟 **Window**: A contiguous subarray/substring
+* ↔️ **Two pointers**: `left` and `right` define the window boundaries
+* 🎯 **Goal**: Find optimal window that satisfies some condition
 
-## 🪟 Two Types of Windows
+## Two Main Types
 
-### Fixed Size Window
-Window size stays constant, just slides over:
+### 1. **Fixed Size Window**
+Window size stays constant, slide one position at a time.
 
 ```go
-func fixedWindow(nums []int, k int) []int {
+func fixedWindow(arr []int, k int) []int {
     result := []int{}
+    windowSum := 0
     
-    for i := 0; i <= len(nums)-k; i++ {
-        // Process window nums[i:i+k]
-        windowSum := 0
-        for j := i; j < i+k; j++ {
-            windowSum += nums[j]
-        }
+    // Build initial window
+    for i := 0; i < k; i++ {
+        windowSum += arr[i]
+    }
+    result = append(result, windowSum)
+    
+    // Slide the window
+    for i := k; i < len(arr); i++ {
+        windowSum = windowSum - arr[i-k] + arr[i] // slide
         result = append(result, windowSum)
     }
-    
     return result
 }
 ```
 
-### Variable Size Window
-Window size changes based on conditions:
+### 2. **Variable Size Window**
+Window grows/shrinks based on condition. Two sub-patterns:
 
+#### **Pattern A: Find Maximum Window**
 ```go
-func variableWindow(nums []int, target int) int {
+func maxWindow(s string) int {
     left := 0
-    currentSum := 0
-    maxLength := 0
+    maxLen := 0
     
-    for right := 0; right < len(nums); right++ {
-        currentSum += nums[right]  // Expand window
+    for right := 0; right < len(s); right++ {
+        // Add s[right] to window
+        addToWindow(s[right])
         
-        // Contract window while condition violated
-        for currentSum > target {
-            currentSum -= nums[left]
+        // Shrink from left while condition is violated
+        for !isValid() {
+            removeFromWindow(s[left])
             left++
         }
         
-        // Update result
-        maxLength = max(maxLength, right-left+1)
+        // Update answer with current valid window
+        maxLen = max(maxLen, right - left + 1)
     }
-    
-    return maxLength
+    return maxLen
 }
 ```
 
-## 🎯 Common Patterns
-
-### Expand-Contract Pattern
+#### **Pattern B: Find Minimum Window**
 ```go
-left := 0
-for right := 0; right < len(array); right++ {
-    // 1. Expand: add array[right] to window
-    addToWindow(array[right])
+func minWindow(s string) int {
+    left := 0
+    minLen := math.MaxInt32
     
-    // 2. Contract: shrink from left while invalid
-    for !isValid() {
-        removeFromWindow(array[left])
-        left++
+    for right := 0; right < len(s); right++ {
+        // Add s[right] to window
+        addToWindow(s[right])
+        
+        // Shrink from left while condition is satisfied
+        for isValid() {
+            minLen = min(minLen, right - left + 1)
+            removeFromWindow(s[left])
+            left++
+        }
     }
-    
-    // 3. Update result with current valid window
-    updateResult(right - left + 1)
+    return minLen
 }
 ```
 
-## 🧠 Analogy: Looking Through a Train Window
+## Common Sliding Window Problems
 
-Imagine you're on a train looking for houses:
+* **Subarray sum equals K**
+* **Longest substring without repeating characters**
+* **Minimum window substring**
+* **Maximum sum subarray of size K**
+* **Find all anagrams in a string**
 
-* **Fixed window**: You have a fixed-size window and the train moves at constant speed
-* **Variable window**: You can make the window bigger/smaller based on what you see
-* **No re-checking**: Once the train passes a house, you don't look back
-* **Efficient**: You see each house exactly once, not repeatedly
+## 🧠 Analogy: Looking Through a Moving Window
 
-Perfect for: "Find the longest/shortest/best contiguous something"
+Imagine you're on a train looking through a window:
 
-## 🎪 When to Use Each Technique?
+* **Fixed window**: Window size never changes, but the view slides by
+* **Variable window**: You can make the window bigger or smaller
+* **Expand**: See more of the landscape (grow window right)
+* **Contract**: Focus on specific details (shrink window from left)
+* **Goal**: Find the best view that meets your criteria
 
-| Problem Type | Best Approach | Why? |
-|-------------|---------------|------|
-| "Best contiguous subarray" | Sliding Window | Avoids recomputation |
-| "Optimal selection from choices" | Greedy | Local choices → global optimum |
-| "All possible combinations" | DFS + Include/Exclude | Need to explore all paths |
-| "Tree/graph traversal" | DFS | Natural recursive structure |
+## 🔑 Key Insight
+
+Sliding window **avoids recalculating** from scratch:
+* Instead of checking every possible subarray (O(n³))
+* We **slide** and **maintain** the window state (O(n))
+* **Add one element**, **remove one element** = O(1) per step
+

@@ -5,60 +5,61 @@ description: "Greedy algorithms guide covering locally optimal choices and key i
 
 # Greedy
 
-* **Greedy algorithms** make the *locally optimal* choice at each step, hoping it leads to a global optimum.
-* You never “reconsider” choices—once you pick, you move on.
-* Works when the problem has the **greedy-choice property** (local optimum → global optimum).
+* At each step, make the **locally optimal choice**—the one that looks best right now.
+* Hope that these local choices lead to a **global optimum**.
+
+When does greedy work?
+- The problem must have the **greedy-choice property** (a global optimum can be reached by choosing local optima).
+- Often works for interval scheduling, coin change (with canonical coins), activity selection, etc.
 
 Example:
-*Pick the most money you can at each step:*
 
 ```go
-// Coin Change (Greedy version, if coins are 1, 5, 10, 25)
-func coinChange(coins []int, amount int) int {
-    count := 0
-    for i := len(coins) - 1; i >= 0; i-- {
-        use := amount / coins[i]
-        count += use
-        amount -= use * coins[i]
+// Greedy: Find minimum number of coins for amount (canonical coins)
+coins := []int{25, 10, 5, 1}
+amount := 63
+count := 0
+for _, coin := range coins {
+    for amount >= coin {
+        amount -= coin
+        count++
     }
-    if amount > 0 {
-        return -1 // not possible
-    }
-    return count
 }
+fmt.Println(count) // Output: 6 (2x25 + 1x10 + 3x1)
 ```
-
-* **Key:** Greedy only works if the problem structure allows it (e.g., U.S. coins, but not all coin sets).
 
 ---
 
 # Sliding Window
 
-* **Sliding window** is a technique for problems involving *contiguous subarrays or substrings*.
-* You maintain a “window” (range) over the data and slide it to find the answer efficiently.
-* Useful for: maximum/minimum sum, longest/shortest substring, etc.
+* Use a **window** (contiguous subarray/substring) that slides over the input.
+* Efficient for problems involving **subarrays, substrings, or sequences**.
+
+How it works:
+- Start with a window (e.g., left and right pointers).
+- Expand or shrink the window to maintain a property (sum, unique elements, etc.).
+- Move the window efficiently without reprocessing the whole subarray each time.
 
 Example:
-*Find the length of the longest substring with no repeating characters:*
 
 ```go
-func lengthOfLongestSubstring(s string) int {
-    m := make(map[byte]int)
-    left, res := 0, 0
-    for right := 0; right < len(s); right++ {
-        if idx, ok := m[s[right]]; ok && idx >= left {
-            left = idx + 1
+// Sliding Window: Longest substring with at most K distinct characters
+s := "eceba"
+k := 2
+left, maxLen := 0, 0
+count := map[byte]int{}
+for right := 0; right < len(s); right++ {
+    count[s[right]]++
+    for len(count) > k {
+        count[s[left]]--
+        if count[s[left]] == 0 {
+            delete(count, s[left])
         }
-        m[s[right]] = right
-        if right-left+1 > res {
-            res = right - left + 1
-        }
+        left++
     }
-    return res
+    if right-left+1 > maxLen {
+        maxLen = right - left + 1
+    }
 }
+fmt.Println(maxLen) // Output: 3 ("ece")
 ```
-
-* **Key:**
-  - Expand the window (move right pointer)
-  - Shrink from the left as needed
-  - Track the best result as you go

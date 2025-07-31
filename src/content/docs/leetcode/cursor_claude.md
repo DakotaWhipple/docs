@@ -5,139 +5,128 @@ description: "Greedy algorithms guide covering locally optimal choices and key i
 
 # Greedy Algorithm
 
-* You make the **locally optimal choice** at each step
-* Hope that this leads to a **globally optimal solution**
-* Key insight: **Never look back** - once you make a choice, you commit to it
+* You make the **locally optimal choice** at each step.
+* You never reconsider past decisions.
+* The key insight: **local optimum leads to global optimum** (when it works).
 
-**When does greedy work?**
-* The problem has **optimal substructure**
-* **Greedy choice property**: Local optimum leads to global optimum
-
-Example:
+Example strategy:
+* "Always pick the largest available item"
+* "Always pick the earliest deadline"
+* "Always pick the smallest cost"
 
 ```go
-// Greedy approach for activity selection
-func maxActivities(start, end []int) int {
-    // Sort by end time (greedy choice: pick earliest ending)
-    sort.Slice(activities, func(i, j int) bool {
-        return end[i] < end[j]
-    })
-    
-    count := 1
-    lastEnd := end[0]
-    
-    for i := 1; i < len(start); i++ {
-        if start[i] >= lastEnd {  // No overlap
-            count++
-            lastEnd = end[i]  // Greedy: always pick this one
-        }
+// Greedy: always pick the best choice right now
+func greedy(items []Item) {
+    for i := 0; i < len(items); i++ {
+        best := findBestChoice(items[i:])  // local optimum
+        take(best)                         // commit to it
+        // never look back!
     }
-    return count
 }
 ```
 
----
+## 🎯 When Does Greedy Work?
 
-## 🎯 Greedy Strategy Pattern
+Greedy works when the problem has **optimal substructure** + **greedy choice property**:
 
-At each step, ask: **"What's the best choice RIGHT NOW?"**
+* **Optimal substructure**: optimal solution contains optimal solutions to subproblems
+* **Greedy choice property**: locally optimal choice leads to globally optimal solution
 
-Common greedy strategies:
-* **Earliest deadline first** (scheduling)
-* **Smallest/largest first** (optimization)
-* **Closest/farthest first** (pathfinding)
+Common greedy patterns:
+* **Interval scheduling**: sort by end time, pick earliest ending
+* **Activity selection**: pick the activity that ends first
+* **Huffman coding**: merge two lowest frequency nodes
+* **Fractional knapsack**: sort by value/weight ratio
 
-```
-Step 1: Pick best option → Commit
-Step 2: Pick best option → Commit  
-Step 3: Pick best option → Commit
-...
-```
+## 🧠 Analogy: The Impatient Shopper
 
-**No backtracking!** Unlike DFS, you never reconsider previous choices.
+Imagine you're shopping with limited time:
+
+* You walk through the store **once**
+* At each item, you decide: "Is this the best I can get **right now**?"
+* If yes → take it and move on
+* If no → skip it and **never come back**
+
+You can't go back and reconsider because you're **greedy for immediate gains**.
 
 ---
 
 # Sliding Window
 
-* Maintain a **window** (subarray) that **slides** through the array
-* **Expand** window to include more elements
-* **Shrink** window when condition is violated
-* **Track** the best result seen so far
+* You maintain a **window** (subarray) that **slides** across the array.
+* The window **expands** and **contracts** based on some condition.
+* Perfect for **subarray/substring problems** with constraints.
 
-Two main patterns:
-
-## 🔄 Fixed Window Size
-
-```go
-// Find max sum of k consecutive elements
-func maxSum(nums []int, k int) int {
-    windowSum := 0
-    // Build initial window
-    for i := 0; i < k; i++ {
-        windowSum += nums[i]
-    }
-    
-    maxSum := windowSum
-    // Slide the window
-    for i := k; i < len(nums); i++ {
-        windowSum += nums[i]      // Add new element
-        windowSum -= nums[i-k]    // Remove old element
-        maxSum = max(maxSum, windowSum)
-    }
-    return maxSum
-}
-```
-
-## 🎯 Variable Window Size
+Two main types:
+* **Fixed size window**: window size stays constant
+* **Variable size window**: window grows/shrinks dynamically
 
 ```go
-// Longest substring with at most k distinct characters
-func longestSubstring(s string, k int) int {
+// Variable sliding window template
+func slidingWindow(nums []int) int {
     left, right := 0, 0
-    charCount := make(map[byte]int)
-    maxLen := 0
     
-    for right < len(s) {
-        // Expand window
-        charCount[s[right]]++
+    for right < len(nums) {
+        // Expand: add nums[right] to window
+        addToWindow(nums[right])
         
-        // Shrink window if needed
-        for len(charCount) > k {
-            charCount[s[left]]--
-            if charCount[s[left]] == 0 {
-                delete(charCount, s[left])
-            }
+        // Contract: shrink window if condition violated
+        for windowInvalid() {
+            removeFromWindow(nums[left])
             left++
         }
         
-        // Update result
-        maxLen = max(maxLen, right-left+1)
+        // Update result with current valid window
+        updateResult(right - left + 1)
         right++
     }
-    return maxLen
+    
+    return result
 }
 ```
 
----
+## 🎯 Common Sliding Window Patterns
 
-## 🏃‍♂️ Sliding Window Mental Model
+**Pattern 1: Maximum window size**
+* "Longest substring with at most K distinct characters"
+* Expand until invalid, then contract until valid
 
-Think of it like a **rubber band** on an array:
+**Pattern 2: Minimum window size**  
+* "Minimum window substring containing all characters"
+* Expand until valid, then contract while maintaining validity
+
+**Pattern 3: Fixed window**
+* "Maximum sum of subarray of size K"
+* Slide window of constant size
+
+## 🔄 The Two-Pointer Dance
+
+Think of sliding window as **two pointers dancing**:
 
 ```
-[1, 2, 3, 4, 5, 6, 7, 8]
- |-----|                    Window: [1,2,3]
-    |-----|                 Slide right: [2,3,4]
-       |-----|              Slide right: [3,4,5]
+[1, 2, 3, 4, 5, 6]
+ ↑           ↑
+left       right
+
+Step 1: right moves → window grows
+[1, 2, 3, 4, 5, 6]
+ ↑              ↑
+left          right
+
+Step 2: condition violated → left catches up
+[1, 2, 3, 4, 5, 6]
+    ↑           ↑
+   left       right
 ```
 
-**Two pointers strategy:**
-* `left`: Start of window
-* `right`: End of window  
-* Move them to **maintain some condition**
+## 🧠 Analogy: The Adjustable Spotlight
 
-**When to use sliding window:**
-* Need to find **subarray/substring** with some property
-* Can **incrementally update** the result as window changes
-* **Contiguous elements** matter (unlike two pointers on sorted array)
+Imagine you have a **spotlight** shining on an array:
+
+* The spotlight can **expand** (include more elements)
+* The spotlight can **contract** (exclude elements from the left)
+* You're looking for the **best spotlight position** that satisfies your condition
+* Instead of checking **every possible position**, you **slide smoothly** from left to right
+
+The spotlight never jumps around randomly - it moves **systematically** to explore all possibilities efficiently.
+
