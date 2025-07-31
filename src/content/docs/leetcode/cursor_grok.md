@@ -3,78 +3,59 @@ title: "Cursor Grok"
 description: "Greedy algorithms guide covering locally optimal choices and key insights for problem solving"
 ---
 
-# Greedy Algorithms
+# Greedy
 
-Greedy algorithms build up a solution piece by piece, always choosing the next piece that offers the most obvious and immediate benefit.
+* Greedy algorithms make the locally optimal choice at each stage with the hope of finding a global optimum.
+* They are often used for optimization problems.
+* Key: Prove that the greedy choice property holds and that it leads to optimal solution.
 
-Key points:
-- Make the locally optimal choice at each stage.
-- Hope that these local optima lead to a global optimum.
-- Efficient but may not always yield the correct solution; works for problems with 'optimal substructure' and 'greedy choice property'.
-
-Example: Activity Selection Problem
-- Sort activities by end time.
-- Pick the activity that ends first, then the next one that starts after it ends, and so on.
-
-Go example for fractional knapsack (simplified):
+Example: Minimum number of coins for change (but note it may not always be optimal without proper coin denominations).
 
 ```go
-type Item struct {
-    Value, Weight float64
-}
-
-func fractionalKnapsack(items []Item, capacity float64) float64 {
-    sort.Slice(items, func(i, j int) bool {
-        return items[i].Value/items[i].Weight > items[j].Value/items[j].Weight
+// Greedy example: Activity Selection
+func activitySelection(activities [][]int) int {
+    sort.Slice(activities, func(i, j int) bool {
+        return activities[i][1] < activities[j][1]
     })
-    var totalValue float64
-    for _, item := range items {
-        if capacity >= item.Weight {
-            capacity -= item.Weight
-            totalValue += item.Value
-        } else {
-            totalValue += item.Value * (capacity / item.Weight)
-            break
+    count := 1
+    end := activities[0][1]
+    for i := 1; i < len(activities); i++ {
+        if activities[i][0] >= end {
+            count++
+            end = activities[i][1]
         }
     }
-    return totalValue
+    return count
 }
 ```
 
 ---
 
-# Sliding Window Technique
+# Sliding Window
 
-The sliding window technique is used to find subarrays or substrings that satisfy given conditions efficiently, often in O(n) time.
+* Technique for problems involving arrays or strings where we maintain a window of elements that satisfies certain conditions.
+* We expand or shrink the window by moving pointers (usually left and right).
+* Useful for finding subarrays/substrings with specific properties.
 
-Key points:
-- Use two pointers to represent the current window.
-- Expand the window by moving the right pointer.
-- Shrink the window from the left when the condition is violated.
-- Track the optimal value as you go.
-
-Types:
-- Fixed size window: e.g., maximum sum of subarray of size k.
-- Variable size window: e.g., longest substring without repeating characters.
-
-Example: Longest Substring Without Repeating Characters (LeetCode 3)
+Example: Find the maximum sum of a subarray of fixed size k.
 
 ```go
-func lengthOfLongestSubstring(s string) int {
-    charSet := make(map[byte]bool)
-    left := 0
-    maxLength := 0
-
-    for right := 0; right < len(s); right++ {
-        for charSet[s[right]] {
-            delete(charSet, s[left])
-            left++
-        }
-        charSet[s[right]] = true
-        maxLength = max(maxLength, right - left + 1)
+func maxSumSubarray(arr []int, k int) int {
+    if len(arr) < k {
+        return 0 // or handle error
     }
-    return maxLength
+    maxSum := 0
+    currentSum := 0
+    for i := 0; i < k; i++ {
+        currentSum += arr[i]
+    }
+    maxSum = currentSum
+    for i := k; i < len(arr); i++ {
+        currentSum = currentSum - arr[i-k] + arr[i]
+        if currentSum > maxSum {
+            maxSum = currentSum
+        }
+    }
+    return maxSum
 }
 ```
-
-Remember to import necessary packages and define helper functions like max.
