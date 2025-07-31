@@ -5,41 +5,44 @@ description: "Greedy algorithms introduction covering locally optimal choices an
 
 # Greedy
 
-A greedy algorithm makes the **locally optimal choice** at each step with the hope of finding a **global optimum**.
+A greedy algorithm builds up a solution piece by piece, always choosing the next piece that offers the most obvious and immediate benefit. It's about making the locally optimal choice at each stage with the hope of finding a global optimum.
 
-* **Core Idea**: "What's the best move I can make *right now*?"
-* It doesn't look ahead or reconsider past choices.
+## Key Characteristics
 
-## When Does It Work?
+*   **Local Optimality**: At each step, you make the best choice available at that moment.
+*   **No Backtracking**: Once a choice is made, it's never reconsidered.
+*   **Hope for Global Optimum**: The assumption is that a series of locally optimal moves will lead to a globally optimal solution. This doesn't always work, but it does for a specific class of problems.
 
-Greedy works when the problem has the **Greedy Choice Property**:
+## When to Use It
 
-> A global optimal solution can be arrived at by making a locally optimal choice.
+Greedy algorithms are suitable for problems with the **greedy choice property** and **optimal substructure**.
 
-Not all problems have this property. For example, making a locally optimal choice in a chess game (e.g., taking a pawn) might lead to a globally suboptimal outcome (e.g., getting checkmated).
+1.  **Greedy Choice Property**: A global optimal solution can be arrived at by making a locally optimal choice.
+2.  **Optimal Substructure**: An optimal solution to the problem contains optimal solutions to its subproblems.
 
-## Example: Assign Cookies (LeetCode 455)
+## Example: Coin Change
 
-* **Problem**: You have children with greed factors `g` and cookies of sizes `s`. You can give a cookie `j` to a child `i` if `s[j] >= g[i]`. Maximize the number of content children.
-* **Greedy Strategy**:
-    1. Sort both the greed factors and the cookie sizes.
-    2. Give the smallest cookie to the least greedy child who can eat it.
-    3. Move to the next child and the next cookie.
+Imagine you need to give change for a certain amount using the fewest possible coins (e.g., quarters, dimes, nickels, pennies).
 
-This works because a small cookie is best used on a less greedy child. Saving it for a greedier child is a waste, as it might not be big enough.
+The greedy approach is:
+1.  Start with the largest coin (quarter).
+2.  Use as many of them as you can without exceeding the amount.
+3.  Move to the next largest coin (dime) and repeat.
+4.  Continue until the amount is zero.
+
+For standard US currency, this works perfectly.
 
 ```go
-func findContentChildren(g []int, s []int) int {
-    sort.Ints(g)
-    sort.Ints(s)
-    child, cookie := 0, 0
-    for child < len(g) && cookie < len(s) {
-        if s[cookie] >= g[child] {
-            child++ // child is content
+func makeChange(amount int) []int {
+    coins := []int{25, 10, 5, 1}
+    change := []int{}
+    for _, coin := range coins {
+        for amount >= coin {
+            change = append(change, coin)
+            amount -= coin
         }
-        cookie++ // move to next cookie regardless
     }
-    return child
+    return change
 }
 ```
 
@@ -47,47 +50,57 @@ func findContentChildren(g []int, s []int) int {
 
 # Sliding Window
 
-A sliding window is a technique for problems that involve **contiguous subarrays or substrings**.
+The sliding window technique is used for problems that involve finding a subarray or substring in an array or string that satisfies a certain condition. It involves maintaining a "window" (a sub-range) that slides over the data.
 
-* **Core Idea**: Maintain a "window" (a sub-portion of the data) and slide it through the data.
-* The window can **grow** (by moving the right pointer) or **shrink** (by moving the left pointer).
+## Core Idea
 
-## When to Use It?
+Instead of re-computing values for every possible subarray, you slide a window over the data and efficiently update the result. The window can be of a fixed or variable size.
 
-Look for problems asking for:
+*   **Expand**: Grow the window by moving the right pointer.
+*   **Shrink**: Shrink the window by moving the left pointer.
 
-* Longest/shortest substring/subarray
-* A specific property within a contiguous block of elements (e.g., max sum, count of distinct characters).
+This turns a potential O(n²) problem into an O(n) solution.
 
-## Example: Max Erasure Value (LeetCode 1695)
+## When to Use It
 
-* **Problem**: Find the maximum sum of a contiguous subarray with **unique elements**.
-* **Sliding Window Strategy**:
-    1. Use a `right` pointer to expand the window, adding the new element's value to a running `currentSum`.
-    2. Use a `map` or `set` to track elements currently in the window.
-    3. If you encounter a duplicate element, shrink the window from the `left` until the duplicate is removed. As you shrink, subtract the `left` element's value from `currentSum`.
-    4. After each expansion, update the `maxSum`.
+Look for problems that ask for something like:
+*   Longest/shortest/best subarray/substring.
+*   A contiguous sequence that meets a certain criteria.
+*   Problems involving arrays, strings, or lists where you need to check contiguous blocks.
+
+## Example: Maximum Sum Subarray of Size K
+
+Given an array of integers, find the maximum sum of any contiguous subarray of size `k`.
+
+1.  **Initialize**: Calculate the sum of the first `k` elements. This is your initial window.
+2.  **Slide**:
+    *   Move the window one step to the right.
+    *   **Subtract** the element that is no longer in the window (the leftmost one).
+    *   **Add** the new element that just entered the window (the rightmost one).
+    .  Update the maximum sum.
 
 ```go
-func maximumErasureValue(nums []int) int {
-    seen := make(map[int]int)
-    left, maxSum, currentSum := 0, 0, 0
+func maxSumSubarray(nums []int, k int) int {
+    if len(nums) < k {
+        return 0
+    }
 
-    for right, val := range nums {
-        if lastSeenIndex, ok := seen[val]; ok && lastSeenIndex >= left {
-            // Shrink window from the left
-            for left <= lastSeenIndex {
-                currentSum -= nums[left]
-                left++
-            }
-        }
-        // Expand window to the right
-        seen[val] = right
-        currentSum += val
-        if currentSum > maxSum {
-            maxSum = currentSum
+    // Initial window sum
+    windowSum := 0
+    for i := 0; i < k; i++ {
+        windowSum += nums[i]
+    }
+
+    maxSum := windowSum
+
+    // Slide the window
+    for i := k; i < len(nums); i++ {
+        windowSum += nums[i] - nums[i-k] // Add new, subtract old
+        if windowSum > maxSum {
+            maxSum = windowSum
         }
     }
+
     return maxSum
 }
 ```

@@ -5,67 +5,68 @@ description: "Greedy algorithms guide with locally optimal choices and key chara
 
 # Greedy Algorithms
 
-* **Make the locally optimal choice** at each step
-* Hope that these local choices lead to a **globally optimal solution**
-* **No backtracking** - once you make a choice, you stick with it
+* Make the **locally optimal choice** at each step
+* Hope that this leads to a **globally optimal solution**
+* Once you make a choice, you **never reconsider** it
 
-The key insight: Sometimes the best immediate choice actually leads to the best overall result.
+## 🎯 Key Insight: "Best Now = Best Overall"
 
-## 🎯 When Does Greedy Work?
+Greedy works when:
+* The problem has **optimal substructure**
+* Making the best local choice doesn't prevent finding the global optimum
 
-Greedy works when the problem has **optimal substructure** and the **greedy choice property**:
+Example:
 
-* **Optimal substructure**: An optimal solution contains optimal solutions to subproblems
-* **Greedy choice property**: A globally optimal solution can be reached by making locally optimal choices
-
-## 🔧 Common Greedy Patterns
-
-### 1. Interval Scheduling
 ```go
-// Schedule maximum number of non-overlapping intervals
-// Sort by end time, pick earliest ending interval
-sort.Slice(intervals, func(i, j int) bool {
-    return intervals[i][1] < intervals[j][1]
-})
+// Greedy: Activity Selection
+func activitySelection(activities []Activity) []Activity {
+    sort.Slice(activities, func(i, j int) bool {
+        return activities[i].end < activities[j].end // Sort by end time
+    })
+    
+    result := []Activity{activities[0]}
+    lastEnd := activities[0].end
+    
+    for i := 1; i < len(activities); i++ {
+        if activities[i].start >= lastEnd {
+            result = append(result, activities[i])
+            lastEnd = activities[i].end
+        }
+    }
+    return result
+}
 ```
 
-### 2. Fractional Knapsack
-```go
-// Sort by value/weight ratio (highest first)
-sort.Slice(items, func(i, j int) bool {
-    return items[i].value/items[i].weight > items[j].value/items[j].weight
-})
+## 🔄 Common Greedy Patterns:
+
+1. **Sort first**, then greedily pick
+2. **Priority Queue/Heap** for always getting the "best" next choice
+3. **Interval problems**: Sort by start/end time
+4. **Array problems**: Take the best available at each position
+
+## 🚨 When Greedy Fails:
+
+```
+// Coin change with coins [1, 3, 4] and amount 6
+// Greedy: 4 + 1 + 1 = 3 coins ❌
+// Optimal: 3 + 3 = 2 coins ✅
 ```
 
-### 3. Huffman Coding
-```go
-// Always merge two nodes with smallest frequencies
-// Build optimal prefix-free code
-```
-
-## 🧠 Greedy vs Dynamic Programming
-
-| Greedy | Dynamic Programming |
-|--------|-------------------|
-| Makes one choice per step | Considers all choices |
-| No backtracking | Can reconsider decisions |
-| Faster (usually O(n log n)) | Slower (usually O(n²) or more) |
-| Works only for specific problems | More general approach |
+Greedy doesn't always work! Use **Dynamic Programming** when you need to consider all possibilities.
 
 ---
 
 # Sliding Window
 
-* **Two pointers** that define a "window" over your data
-* The window **slides** (expands or shrinks) based on some condition
-* Perfect for **contiguous subarrays/substrings** problems
+* Use **two pointers** to maintain a "window" over an array/string
+* The window **slides** (expands/contracts) based on some condition
+* Avoids nested loops → **O(n) instead of O(n²)**
 
-## 🪟 Types of Sliding Windows
+## 🪟 Two Types:
 
 ### 1. Fixed Size Window
-The window size stays constant, just slides left to right:
-
 ```go
+// Find max sum of k consecutive elements
 func maxSumSubarray(nums []int, k int) int {
     windowSum := 0
     for i := 0; i < k; i++ {
@@ -74,7 +75,7 @@ func maxSumSubarray(nums []int, k int) int {
     
     maxSum := windowSum
     for i := k; i < len(nums); i++ {
-        windowSum = windowSum - nums[i-k] + nums[i]  // slide
+        windowSum += nums[i] - nums[i-k] // Slide window
         maxSum = max(maxSum, windowSum)
     }
     return maxSum
@@ -82,66 +83,56 @@ func maxSumSubarray(nums []int, k int) int {
 ```
 
 ### 2. Variable Size Window
-The window grows and shrinks based on conditions:
-
 ```go
-func lengthOfLongestSubstring(s string) int {
-    left, right := 0, 0
-    seen := make(map[byte]bool)
+// Longest substring with at most k distinct characters
+func lengthOfLongestSubstringKDistinct(s string, k int) int {
+    left := 0
+    charCount := make(map[byte]int)
     maxLen := 0
     
-    for right < len(s) {
-        if !seen[s[right]] {
-            seen[s[right]] = true
-            maxLen = max(maxLen, right-left+1)
-            right++
-        } else {
-            delete(seen, s[left])
+    for right := 0; right < len(s); right++ {
+        charCount[s[right]]++
+        
+        // Shrink window if too many distinct chars
+        for len(charCount) > k {
+            charCount[s[left]]--
+            if charCount[s[left]] == 0 {
+                delete(charCount, s[left])
+            }
             left++
         }
+        
+        maxLen = max(maxLen, right-left+1)
     }
     return maxLen
 }
 ```
 
-## 🎯 Common Sliding Window Patterns
+## 🎯 Common Sliding Window Patterns:
 
-### Pattern 1: "Maximum/Minimum subarray of size K"
-- Fixed window size
-- Slide and track max/min
+1. **Expand right pointer** until condition is violated
+2. **Contract left pointer** to restore condition
+3. **Track the best** (max/min) window seen so far
 
-### Pattern 2: "Longest subarray with condition X"
-- Variable window size
-- Expand when condition holds, shrink when violated
+## 🔧 When to Use Sliding Window:
 
-### Pattern 3: "Number of subarrays with condition X"
-- Count valid windows as you slide
+* **Subarray/substring** problems
+* **Contiguous elements** matter
+* You need to **avoid O(n²)** brute force
+* Problems with words like: "longest", "shortest", "maximum", "minimum" + "subarray/substring"
 
-## 🧠 When to Use Sliding Window?
+## 🧠 Mental Model:
 
-Ask yourself:
-- ✅ Do I need contiguous elements?
-- ✅ Can I solve it by tracking a window state?
-- ✅ Does expanding/shrinking the window help?
+Think of it like a **rubber band** that stretches and contracts:
 
-If yes → probably sliding window!
+```
+[a, b, c, d, e, f, g]
+ ^     ^
+left  right  (window = [a,b,c])
 
-## 🔄 Two Pointers vs Sliding Window
+[a, b, c, d, e, f, g]
+    ^        ^
+   left    right  (window = [b,c,d,e])
+```
 
-| Two Pointers | Sliding Window |
-|-------------|----------------|
-| Pointers can move independently | Pointers define a window |
-| Often for sorted arrays | Often for unsorted subarrays |
-| Example: Two Sum in sorted array | Example: Longest substring problems |
-
----
-
-## 🎨 Algorithm Cheat Sheet
-
-| Problem Type | Algorithm | Time Complexity |
-|-------------|-----------|----------------|
-| All subsets/permutations | DFS + Include/Exclude | O(2ⁿ) |
-| Optimal scheduling | Greedy | O(n log n) |
-| Contiguous subarray | Sliding Window | O(n) |
-| Tree traversal | DFS | O(n) |
-| Graph exploration | DFS/BFS | O(V + E) |
+The window **slides** through the array, always maintaining some property!
