@@ -1,16 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 
-// Get all markdown files from the leetcode directory
-const leetcodeEntries = await getCollection('docs', ({ slug }) => {
-  return slug && slug.startsWith('leetcode/') && slug !== 'leetcode/index';
-});
+// Get all entries from docs collection
+const allDocs = await getCollection('docs');
+
+// Filter for leetcode entries, excluding the index
+const leetcodeEntries = allDocs.filter(entry => 
+  entry.id.startsWith('leetcode/') && 
+  entry.id !== 'leetcode/index.mdx' &&
+  entry.id !== 'leetcode'
+);
 
 // Create solution mapping for dropdowns
 const solutions = leetcodeEntries.map(entry => ({
-  slug: entry.slug,
-  title: entry.data.title || entry.slug.replace('leetcode/', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-  filename: entry.slug.replace('leetcode/', '')
+  slug: entry.id,
+  title: entry.data.title || entry.id.replace('leetcode/', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+  filename: entry.id.replace('leetcode/', '')
 }));
 ---
 
@@ -19,22 +24,26 @@ const solutions = leetcodeEntries.map(entry => ({
     <div class="editor-control">
       <label for="left-select">Left Solution:</label>
       <select id="left-select">
-        {solutions.map((solution, index) => (
+        {solutions.length > 0 ? solutions.map((solution, index) => (
           <option value={solution.slug} selected={index === 0}>
             {solution.title}
           </option>
-        ))}
+        )) : (
+          <option value="">No solutions found</option>
+        )}
       </select>
     </div>
     
     <div class="editor-control">
       <label for="right-select">Right Solution:</label>
       <select id="right-select">
-        {solutions.map((solution, index) => (
-          <option value={solution.slug} selected={index === 1}>
+        {solutions.length > 0 ? solutions.map((solution, index) => (
+          <option value={solution.slug} selected={index === 1 || (solutions.length === 1 && index === 0)}>
             {solution.title}
           </option>
-        ))}
+        )) : (
+          <option value="">No solutions found</option>
+        )}
       </select>
     </div>
   </div>
