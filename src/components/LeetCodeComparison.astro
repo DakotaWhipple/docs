@@ -27,33 +27,30 @@ const solutions = leetcodeEntries.map(entry => ({
     </svg>
   </button>
 
-  <!-- Floating Controls -->
-  <div class="floating-controls">
-    <div class="floating-dropdown">
-      <label for="left-select">Left</label>
-      <select id="left-select">
-        {solutions.length > 0 ? solutions.map((solution, index) => (
-          <option value={solution.slug} selected={index === 0}>
-            {solution.title}
-          </option>
-        )) : (
-          <option value="">No solutions found</option>
-        )}
-      </select>
-    </div>
-    
-    <div class="floating-dropdown">
-      <label for="right-select">Right</label>
-      <select id="right-select">
-        {solutions.length > 0 ? solutions.map((solution, index) => (
-          <option value={solution.slug} selected={index === 1 || (solutions.length === 1 && index === 0)}>
-            {solution.title}
-          </option>
-        )) : (
-          <option value="">No solutions found</option>
-        )}
-      </select>
-    </div>
+  <!-- Left Dropdown -->
+  <div class="left-dropdown">
+    <select id="left-select">
+      {solutions.length > 0 ? solutions.map((solution, index) => (
+        <option value={solution.slug} selected={index === 0}>
+          {solution.title}
+        </option>
+      )) : (
+        <option value="">No solutions found</option>
+      )}
+    </select>
+  </div>
+
+  <!-- Right Dropdown -->
+  <div class="right-dropdown">
+    <select id="right-select">
+      {solutions.length > 0 ? solutions.map((solution, index) => (
+        <option value={solution.slug} selected={index === 1 || (solutions.length === 1 && index === 0)}>
+          {solution.title}
+        </option>
+      )) : (
+        <option value="">No solutions found</option>
+      )}
+    </select>
   </div>
 
   <!-- Main Content Area -->
@@ -101,22 +98,38 @@ const solutions = leetcodeEntries.map(entry => ({
   }
 
   function initializeFullscreenMode() {
-    // Hide Starlight sidebar and header on load
+    // Hide Starlight sidebar, header, and table of contents on load
     const sidebar = document.querySelector('.sidebar-pane');
     const header = document.querySelector('.header');
+    const toc = document.querySelector('.right-sidebar-panel'); // Table of contents
     const main = document.querySelector('main');
     
     if (sidebar) sidebar.style.display = 'none';
     if (header) header.style.display = 'none';
+    if (toc) toc.style.display = 'none';
     if (main) {
       main.style.marginInlineStart = '0';
       main.style.paddingTop = '0';
+      main.style.marginInlineEnd = '0';
+    }
+  }
+
+  function addCloseButtonToSidebar() {
+    const sidebar = document.querySelector('.sidebar-pane');
+    if (sidebar && !sidebar.querySelector('.close-sidebar-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-sidebar-btn';
+      closeBtn.innerHTML = '×';
+      closeBtn.title = 'Close Sidebar';
+      closeBtn.addEventListener('click', toggleSidebar);
+      sidebar.prepend(closeBtn);
     }
   }
 
   function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar-pane');
     const header = document.querySelector('.header');
+    const toc = document.querySelector('.right-sidebar-panel');
     const main = document.querySelector('main');
     
     if (sidebar && header) {
@@ -128,13 +141,17 @@ const solutions = leetcodeEntries.map(entry => ({
         if (main) {
           main.style.marginInlineStart = '';
           main.style.paddingTop = '';
+          main.style.marginInlineEnd = '';
         }
+        addCloseButtonToSidebar();
       } else {
         sidebar.style.display = 'none';
         header.style.display = 'none';
+        if (toc) toc.style.display = 'none';
         if (main) {
           main.style.marginInlineStart = '0';
           main.style.paddingTop = '0';
+          main.style.marginInlineEnd = '0';
         }
       }
     }
@@ -213,38 +230,37 @@ const solutions = leetcodeEntries.map(entry => ({
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
-  /* Floating Controls */
-  .floating-controls {
+  /* Left Dropdown */
+  .left-dropdown {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
     z-index: 1002;
-    display: flex;
-    gap: 1rem;
     background: var(--sl-color-bg-nav);
-    padding: 1rem;
-    border-radius: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
     border: 1px solid var(--sl-color-hairline);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(8px);
   }
 
-  .floating-dropdown {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 200px;
+  .right-dropdown {
+    position: fixed;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    z-index: 1002;
+    background: var(--sl-color-bg-nav);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-hairline);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(8px);
   }
 
-  .floating-dropdown label {
-    font-weight: 600;
-    color: var(--sl-color-text);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-  }
-
-  .floating-dropdown select {
+  .left-dropdown select,
+  .right-dropdown select {
     padding: 0.75rem;
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 0.5rem;
@@ -253,16 +269,46 @@ const solutions = leetcodeEntries.map(entry => ({
     font-size: 0.875rem;
     transition: all 0.2s ease;
     cursor: pointer;
+    min-width: 200px;
   }
 
-  .floating-dropdown select:hover {
+  .left-dropdown select:hover,
+  .right-dropdown select:hover {
     border-color: var(--sl-color-accent);
   }
 
-  .floating-dropdown select:focus {
+  .left-dropdown select:focus,
+  .right-dropdown select:focus {
     outline: none;
     border-color: var(--sl-color-accent);
     box-shadow: 0 0 0 3px rgba(var(--sl-color-accent-rgb), 0.1);
+  }
+
+  /* Close button for sidebar */
+  .close-sidebar-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--sl-color-bg-nav);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--sl-color-text);
+    z-index: 1003;
+    transition: all 0.2s ease;
+  }
+
+  .close-sidebar-btn:hover {
+    background: var(--sl-color-accent);
+    color: white;
+    transform: scale(1.1);
   }
 
   /* Main Content Area */
@@ -285,7 +331,7 @@ const solutions = leetcodeEntries.map(entry => ({
   }
 
   .starlight-content {
-    padding: 6rem 2rem 2rem 2rem; /* Top padding to account for floating controls */
+    padding: 2rem; /* Reduced top padding since dropdowns are on sides */
     height: 100%;
     overflow: auto;
     box-sizing: border-box;
@@ -389,17 +435,21 @@ const solutions = leetcodeEntries.map(entry => ({
 
   /* Responsive design */
   @media (max-width: 768px) {
-    .floating-controls {
-      flex-direction: column;
-      gap: 0.75rem;
-      top: 0.5rem;
-      right: 0.5rem;
-      left: 0.5rem;
-      padding: 0.75rem;
+    .left-dropdown {
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
     }
     
-    .floating-dropdown {
-      min-width: auto;
+    .right-dropdown {
+      top: 5rem;
+      right: 50%;
+      transform: translateX(50%);
+    }
+    
+    .left-dropdown select,
+    .right-dropdown select {
+      min-width: 250px;
     }
     
     .sidebar-toggle {
@@ -423,7 +473,7 @@ const solutions = leetcodeEntries.map(entry => ({
     }
 
     .starlight-content {
-      padding: 8rem 1rem 2rem 1rem;
+      padding: 10rem 1rem 2rem 1rem;
     }
   }
 
