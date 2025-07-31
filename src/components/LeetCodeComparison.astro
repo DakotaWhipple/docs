@@ -27,8 +27,8 @@ const solutions = leetcodeEntries.map(entry => ({
     </svg>
   </button>
 
-  <!-- Left Dropdown -->
-  <div class="left-dropdown">
+  <!-- Panel Dropdowns -->
+  <div class="left-panel-dropdown">
     <select id="left-select">
       {solutions.length > 0 ? solutions.map((solution, index) => (
         <option value={solution.slug} selected={index === 0}>
@@ -40,8 +40,7 @@ const solutions = leetcodeEntries.map(entry => ({
     </select>
   </div>
 
-  <!-- Right Dropdown -->
-  <div class="right-dropdown">
+  <div class="right-panel-dropdown">
     <select id="right-select">
       {solutions.length > 0 ? solutions.map((solution, index) => (
         <option value={solution.slug} selected={index === 1 || (solutions.length === 1 && index === 0)}>
@@ -101,12 +100,25 @@ const solutions = leetcodeEntries.map(entry => ({
     // Hide Starlight sidebar, header, and table of contents on load
     const sidebar = document.querySelector('.sidebar-pane');
     const header = document.querySelector('.header');
-    const toc = document.querySelector('.right-sidebar-panel'); // Table of contents
     const main = document.querySelector('main');
+    
+    // Hide all possible right sidebar elements
+    const rightSidebarSelectors = [
+      '.right-sidebar',
+      '.right-sidebar-panel', 
+      '.right-sidebar-container',
+      '[data-right-sidebar]',
+      '.sl-toc-wrapper',
+      'aside[aria-labelledby="starlight__on-this-page"]'
+    ];
+    
+    rightSidebarSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => el.style.display = 'none');
+    });
     
     if (sidebar) sidebar.style.display = 'none';
     if (header) header.style.display = 'none';
-    if (toc) toc.style.display = 'none';
     if (main) {
       main.style.marginInlineStart = '0';
       main.style.paddingTop = '0';
@@ -208,6 +220,29 @@ const solutions = leetcodeEntries.map(entry => ({
     flex-direction: column;
   }
 
+  /* Hide Starlight right sidebar completely */
+  :global(.right-sidebar),
+  :global(.right-sidebar-panel),
+  :global(.right-sidebar-container),
+  :global([data-right-sidebar]),
+  :global(.sl-toc-wrapper),
+  :global(aside[aria-labelledby="starlight__on-this-page"]),
+  :global(.starlight-toc),
+  :global(.toc-wrapper) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Ensure main content takes full width without right sidebar space */
+  :global(main) {
+    margin-inline-end: 0 !important;
+    padding-inline-end: 0 !important;
+  }
+
   /* Sidebar Toggle Button */
   .sidebar-toggle {
     position: fixed;
@@ -230,12 +265,11 @@ const solutions = leetcodeEntries.map(entry => ({
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
-  /* Left Dropdown */
-  .left-dropdown {
+  /* Panel Dropdowns */
+  .left-panel-dropdown {
     position: fixed;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
+    top: 1rem;
+    left: calc(25% - 100px);
     z-index: 1002;
     background: var(--sl-color-bg-nav);
     padding: 0.75rem;
@@ -245,11 +279,10 @@ const solutions = leetcodeEntries.map(entry => ({
     backdrop-filter: blur(8px);
   }
 
-  .right-dropdown {
+  .right-panel-dropdown {
     position: fixed;
-    top: 50%;
-    right: 1rem;
-    transform: translateY(-50%);
+    top: 1rem;
+    right: calc(25% - 100px);
     z-index: 1002;
     background: var(--sl-color-bg-nav);
     padding: 0.75rem;
@@ -259,8 +292,8 @@ const solutions = leetcodeEntries.map(entry => ({
     backdrop-filter: blur(8px);
   }
 
-  .left-dropdown select,
-  .right-dropdown select {
+  .left-panel-dropdown select,
+  .right-panel-dropdown select {
     padding: 0.75rem;
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 0.5rem;
@@ -272,13 +305,13 @@ const solutions = leetcodeEntries.map(entry => ({
     min-width: 200px;
   }
 
-  .left-dropdown select:hover,
-  .right-dropdown select:hover {
+  .left-panel-dropdown select:hover,
+  .right-panel-dropdown select:hover {
     border-color: var(--sl-color-accent);
   }
 
-  .left-dropdown select:focus,
-  .right-dropdown select:focus {
+  .left-panel-dropdown select:focus,
+  .right-panel-dropdown select:focus {
     outline: none;
     border-color: var(--sl-color-accent);
     box-shadow: 0 0 0 3px rgba(var(--sl-color-accent-rgb), 0.1);
@@ -331,7 +364,7 @@ const solutions = leetcodeEntries.map(entry => ({
   }
 
   .starlight-content {
-    padding: 2rem; /* Reduced top padding since dropdowns are on sides */
+    padding: 4rem 2rem 2rem 2rem; /* Top padding to account for panel dropdowns */
     height: 100%;
     overflow: auto;
     box-sizing: border-box;
@@ -435,27 +468,28 @@ const solutions = leetcodeEntries.map(entry => ({
 
   /* Responsive design */
   @media (max-width: 768px) {
-    .left-dropdown {
+    .left-panel-dropdown {
       top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0.5rem;
+      right: auto;
     }
     
-    .right-dropdown {
+    .right-panel-dropdown {
       top: 5rem;
-      right: 50%;
-      transform: translateX(50%);
+      right: 0.5rem;
+      left: auto;
     }
     
-    .left-dropdown select,
-    .right-dropdown select {
-      min-width: 250px;
+    .left-panel-dropdown select,
+    .right-panel-dropdown select {
+      min-width: calc(50vw - 2rem);
     }
     
     .sidebar-toggle {
       top: 0.5rem;
       left: 0.5rem;
       padding: 0.5rem;
+      z-index: 1003;
     }
     
     .editors-container {
@@ -473,7 +507,7 @@ const solutions = leetcodeEntries.map(entry => ({
     }
 
     .starlight-content {
-      padding: 10rem 1rem 2rem 1rem;
+      padding: 8rem 1rem 2rem 1rem;
     }
   }
 
