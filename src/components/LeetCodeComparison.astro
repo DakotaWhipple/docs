@@ -1,6 +1,17 @@
 ---
-// Import all solution files statically using modern glob import
-const solutionModules = import.meta.glob('../content/docs/leetcode/*.js', { as: 'raw', eager: true });
+import { getCollection } from 'astro:content';
+
+// Get all markdown files from the leetcode directory
+const leetcodeEntries = await getCollection('docs', ({ slug }) => {
+  return slug && slug.startsWith('leetcode/') && slug !== 'leetcode/index';
+});
+
+// Create solution mapping for dropdowns
+const solutions = leetcodeEntries.map(entry => ({
+  slug: entry.slug,
+  title: entry.data.title || entry.slug.replace('leetcode/', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+  filename: entry.slug.replace('leetcode/', '')
+}));
 ---
 
 <div class="leetcode-comparison">
@@ -8,173 +19,96 @@ const solutionModules = import.meta.glob('../content/docs/leetcode/*.js', { as: 
     <div class="editor-control">
       <label for="left-select">Left Solution:</label>
       <select id="left-select">
-        <optgroup label="Two Sum">
-          <option value="two-sum-1.js">Brute Force O(n²)</option>
-          <option value="two-sum-2.js">Hash Map O(n)</option>
-        </optgroup>
-        <optgroup label="Valid Parentheses">
-          <option value="valid-parentheses-1.js">Stack Solution</option>
-          <option value="valid-parentheses-2.js">Counter (Simple)</option>
-        </optgroup>
+        {solutions.map((solution, index) => (
+          <option value={solution.slug} selected={index === 0}>
+            {solution.title}
+          </option>
+        ))}
       </select>
     </div>
     
     <div class="editor-control">
       <label for="right-select">Right Solution:</label>
       <select id="right-select">
-        <optgroup label="Two Sum">
-          <option value="two-sum-1.js">Brute Force O(n²)</option>
-          <option value="two-sum-2.js" selected>Hash Map O(n)</option>
-        </optgroup>
-        <optgroup label="Valid Parentheses">
-          <option value="valid-parentheses-1.js">Stack Solution</option>
-          <option value="valid-parentheses-2.js">Counter (Simple)</option>
-        </optgroup>
+        {solutions.map((solution, index) => (
+          <option value={solution.slug} selected={index === 1}>
+            {solution.title}
+          </option>
+        ))}
       </select>
     </div>
   </div>
 
   <div class="editors-container">
     <div class="editor-panel">
-      <pre id="left-editor"><code class="language-javascript"></code></pre>
+      <div id="left-content" class="starlight-content"></div>
     </div>
     <div class="editor-panel">
-      <pre id="right-editor"><code class="language-javascript"></code></pre>
+      <div id="right-content" class="starlight-content"></div>
     </div>
   </div>
 </div>
 
-<script>
-  // Solution content mapping
-  const solutions = {
-    "two-sum-1.js": `// Two Sum - Brute Force Solution
-// Time: O(n²), Space: O(1)
-
-function twoSum(nums, target) {
-    for (let i = 0; i < nums.length; i++) {
-        for (let j = i + 1; j < nums.length; j++) {
-            if (nums[i] + nums[j] === target) {
-                return [i, j];
-            }
-        }
-    }
-    return [];
-}
-
-// Example usage:
-// twoSum([2, 7, 11, 15], 9) → [0, 1]
-// twoSum([3, 2, 4], 6) → [1, 2]`,
-    "two-sum-2.js": `// Two Sum - Hash Map Solution
-// Time: O(n), Space: O(n)
-
-function twoSum(nums, target) {
-    const map = new Map();
-    
-    for (let i = 0; i < nums.length; i++) {
-        const complement = target - nums[i];
-        
-        if (map.has(complement)) {
-            return [map.get(complement), i];
-        }
-        
-        map.set(nums[i], i);
-    }
-    
-    return [];
-}
-
-// Example usage:
-// twoSum([2, 7, 11, 15], 9) → [0, 1]
-// twoSum([3, 2, 4], 6) → [1, 2]`,
-    "valid-parentheses-1.js": `// Valid Parentheses - Stack Solution
-// Time: O(n), Space: O(n)
-
-function isValid(s) {
-    const stack = [];
-    const pairs = {
-        ')': '(',
-        '}': '{',
-        ']': '['
-    };
-    
-    for (let char of s) {
-        if (char === '(' || char === '{' || char === '[') {
-            stack.push(char);
-        } else if (char === ')' || char === '}' || char === ']') {
-            if (stack.length === 0 || stack.pop() !== pairs[char]) {
-                return false;
-            }
-        }
-    }
-    
-    return stack.length === 0;
-}
-
-// Example usage:
-// isValid("()") → true
-// isValid("()[]{}") → true
-// isValid("(]") → false`,
-    "valid-parentheses-2.js": `// Valid Parentheses - Counter Solution
-// Time: O(n), Space: O(1) for simple parentheses only
-
-function isValid(s) {
-    // This approach only works for simple parentheses ()
-    // For mixed brackets, use the stack approach
-    let count = 0;
-    
-    for (let char of s) {
-        if (char === '(') {
-            count++;
-        } else if (char === ')') {
-            count--;
-            if (count < 0) {
-                return false;
-            }
-        }
-    }
-    
-    return count === 0;
-}
-
-// Note: This solution only works for () parentheses
-// For full bracket support, use the stack solution
-// Example usage:
-// isValid("()") → true
-// isValid("(())") → true
-// isValid("()(") → false`
-  };
-
-  function updateEditor(editorId, solutionKey) {
-    const editor = document.getElementById(editorId);
-    const codeElement = editor.querySelector('code');
-    if (codeElement && solutions[solutionKey]) {
-      codeElement.textContent = solutions[solutionKey];
+<script define:vars={{ solutions }}>
+  async function fetchMarkdownContent(slug) {
+    try {
+      const response = await fetch(`/${slug}/`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${slug}`);
+      }
+      const html = await response.text();
+      
+      // Parse the HTML and extract the main content
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const mainContent = doc.querySelector('main .sl-markdown-content');
+      
+      return mainContent ? mainContent.innerHTML : '<p>Content not found</p>';
+    } catch (error) {
+      console.error('Error fetching content:', error);
+      return `<p>Error loading content for ${slug}</p>`;
     }
   }
 
-  function initializeEditors() {
+  async function updateContentPanel(panelId, slug) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    
+    // Show loading state
+    panel.innerHTML = '<div class="loading">Loading...</div>';
+    
+    // Fetch and display content
+    const content = await fetchMarkdownContent(slug);
+    panel.innerHTML = content;
+  }
+
+  async function initializeComparison() {
     const leftSelect = document.getElementById('left-select');
     const rightSelect = document.getElementById('right-select');
     
     // Initialize with default selections
-    updateEditor('left-editor', leftSelect.value);
-    updateEditor('right-editor', rightSelect.value);
+    if (leftSelect.value) {
+      await updateContentPanel('left-content', leftSelect.value);
+    }
+    if (rightSelect.value) {
+      await updateContentPanel('right-content', rightSelect.value);
+    }
     
     // Add event listeners
-    leftSelect.addEventListener('change', (e) => {
-      updateEditor('left-editor', e.target.value);
+    leftSelect.addEventListener('change', async (e) => {
+      await updateContentPanel('left-content', e.target.value);
     });
     
-    rightSelect.addEventListener('change', (e) => {
-      updateEditor('right-editor', e.target.value);
+    rightSelect.addEventListener('change', async (e) => {
+      await updateContentPanel('right-content', e.target.value);
     });
   }
 
   // Initialize when DOM is loaded
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeEditors);
+    document.addEventListener('DOMContentLoaded', initializeComparison);
   } else {
-    initializeEditors();
+    initializeComparison();
   }
 </script>
 
@@ -193,6 +127,7 @@ function isValid(s) {
     background: var(--sl-color-bg-nav);
     border-bottom: 1px solid var(--sl-color-hairline);
     gap: 2rem;
+    flex-shrink: 0;
   }
 
   .editor-control {
@@ -231,24 +166,110 @@ function isValid(s) {
     border-right: none;
   }
 
-  .editor-panel pre {
-    margin: 0;
+  .starlight-content {
+    padding: 1rem;
     height: 100%;
     overflow: auto;
-    padding: 1rem;
+  }
+
+  /* Inherit Starlight markdown styling */
+  .starlight-content h1,
+  .starlight-content h2,
+  .starlight-content h3,
+  .starlight-content h4,
+  .starlight-content h5,
+  .starlight-content h6 {
+    color: var(--sl-color-white);
+    font-weight: 600;
+    line-height: var(--sl-line-height-headings);
+    margin-bottom: 1rem;
+  }
+
+  .starlight-content h1 {
+    font-size: var(--sl-text-h1);
+  }
+
+  .starlight-content h2 {
+    font-size: var(--sl-text-h2);
+  }
+
+  .starlight-content h3 {
+    font-size: var(--sl-text-h3);
+  }
+
+  .starlight-content p {
+    color: var(--sl-color-gray-1);
+    margin-bottom: 1rem;
+  }
+
+  .starlight-content ul,
+  .starlight-content ol {
+    color: var(--sl-color-gray-1);
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .starlight-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .starlight-content code {
     background: var(--sl-color-bg-code);
+    color: var(--sl-color-text-code);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
     font-family: var(--sl-font-mono);
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: 0.875em;
   }
 
-  .editor-panel code {
-    color: var(--sl-color-text);
-    white-space: pre;
+  .starlight-content pre {
+    background: var(--sl-color-bg-code);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
   }
 
-  /* Syntax highlighting */
-  .language-javascript {
-    color: var(--sl-color-text);
+  .starlight-content pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .starlight-content blockquote {
+    border-left: 4px solid var(--sl-color-accent);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--sl-color-gray-2);
+    font-style: italic;
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: var(--sl-color-gray-3);
+    font-style: italic;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .comparison-controls {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .editors-container {
+      flex-direction: column;
+    }
+    
+    .editor-panel {
+      border-right: none;
+      border-bottom: 1px solid var(--sl-color-hairline);
+    }
+    
+    .editor-panel:last-child {
+      border-bottom: none;
+    }
   }
 </style>

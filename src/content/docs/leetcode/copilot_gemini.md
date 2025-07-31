@@ -1,3 +1,8 @@
+---
+title: "Copilot Gemini"
+description: "Greedy algorithms introduction covering locally optimal choices and greedy choice property"
+---
+
 # Greedy
 
 A greedy algorithm makes the **locally optimal choice** at each step with the hope of finding a **global optimum**.

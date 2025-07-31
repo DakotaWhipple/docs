@@ -1,3 +1,8 @@
+---
+title: "Copilot O3 Mini"
+description: "Greedy algorithms overview with practical examples including coin change implementation"
+---
+
 # Greedy
 
 * Greedy means making the locally optimal choice at each step, hoping it leads to a global optimum.

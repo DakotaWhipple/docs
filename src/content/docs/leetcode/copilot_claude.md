@@ -1,3 +1,8 @@
+---
+title: "Copilot Claude"
+description: "Greedy algorithms guide with locally optimal choices and key characteristics overview"
+---
+
 # Greedy Algorithms
 
 **Greedy** means making the **locally optimal choice** at each step, hoping it leads to a **globally optimal solution**.

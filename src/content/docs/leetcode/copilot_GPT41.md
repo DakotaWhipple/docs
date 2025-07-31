@@ -1,3 +1,8 @@
+---
+title: "Copilot GPT-4.1"
+description: "Greedy algorithms explanation focusing on locally optimal choices and key characteristics"
+---
+
 # Greedy Algorithms
 
 **Greedy** means making the **locally optimal choice** at each step, hoping it leads to a **globally optimal solution**.

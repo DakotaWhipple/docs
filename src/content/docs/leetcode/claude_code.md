@@ -1,3 +1,8 @@
+---
+title: "Claude Code"
+description: "Greedy algorithms guide covering locally optimal choices and key insights for problem solving"
+---
+
 # Greedy Algorithms
 
 * Make the **locally optimal choice** at each step
