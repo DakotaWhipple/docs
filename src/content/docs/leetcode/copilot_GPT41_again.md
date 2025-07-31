@@ -1,5 +1,5 @@
 ---
-title: "Copilot GPT-4.1 2"
+title: "Copilot GPT-4.1 (again)"
 description: "Greedy algorithms explanation focusing on locally optimal choices and key characteristics"
 ---
 

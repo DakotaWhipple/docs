@@ -1,5 +1,5 @@
 ---
-title: "Claude Code 2"
+title: "Claude Code (again)"
 description: "Greedy algorithms guide covering locally optimal choices and key insights for problem solving"
 ---
 

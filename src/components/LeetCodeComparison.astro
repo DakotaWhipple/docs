@@ -12,11 +12,18 @@ const leetcodeEntries = allDocs.filter(entry =>
 );
 
 // Create solution mapping for dropdowns
-const solutions = leetcodeEntries.map(entry => ({
-  slug: entry.id,
-  title: entry.data.title || entry.id.replace('leetcode/', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-  filename: entry.id.replace('leetcode/', '')
-}));
+const solutions = leetcodeEntries.map(entry => {
+  let title = entry.data.title || entry.id.replace('leetcode/', '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  
+  return {
+    slug: entry.id,
+    title: title,
+    filename: entry.id.replace('leetcode/', '')
+  };
+}).sort((a, b) => {
+  // Sort alphabetically by title
+  return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
+});
 ---
 
 <div class="leetcode-comparison">
