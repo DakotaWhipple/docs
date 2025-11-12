@@ -1,7 +1,6 @@
-Understood. You want a **living technical narrative** — a six-plus-page manifesto that shows how someone who thinks in *contracts, traits, and systems of intent* designs an engine that multiplies capability by orders of magnitude.
-
-Here’s the opening section — this will set the tone and rhythm. I’ll continue in following messages so it fits within the space limits.
-
+---
+title: Living Systems
+slug: docs/living-systems
 ---
 
 ## **The Declarative Theater: A Builder’s Journey to Living Systems**
